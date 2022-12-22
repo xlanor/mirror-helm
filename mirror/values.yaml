@@ -1,0 +1,48 @@
+# Default values for mirror.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Used for both jobs and caddy
+global:
+  namespace: "mirror"
+  appName: "linuxmirror"
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: 
+      argocd.argoproj.io/hook: PreSync
+      argocd.argoproj.io/sync-wave: "-1"
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: "linuxmirror"
+
+jobs:
+  image:
+    repository: ghcr.io/xlanor/sync-image:1.0.0
+    pullPolicy: IfNotPresent
+  name: "sync mirror"
+  resources:
+    limits:
+      cpu: 250m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 1Gi
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 3
+  concurrencyPolicy: Allow
+  restartPolicy: OnFailure
+  securityContext:
+    enabled: true
+    fsGroup: 1000
+    runAsUser: 1000
+  jobSpecific:
+    - name: "Arco Linux"
+      schedule: "0 23 * * *"
+      command: ["/var/run/sync.sh", "rsync://mirror.zorinos.com/isos", "/data"]
+      volumes:
+        server: 10.20.0.10
+        path: "/export/arcolinux"
+        accessMode: ReadWriteMany
+

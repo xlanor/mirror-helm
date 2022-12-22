@@ -1,0 +1,6 @@
+# Minimal alpine image with rsync
+FROM alpine:3.17
+WORKDIR /data
+COPY sync.sh /var/run/sync.sh
+RUN chmod +x /var/run/sync.sh
+RUN apk update && apk add --no-cache rsync bash

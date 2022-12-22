@@ -1,0 +1,98 @@
+{{- $chart_name := .Chart.Name }}
+{{- $chart_version := .Chart.Version | replace "+" "_" }}
+{{- $release_name := .Release.Name }}
+
+{{- range $jobs := .Values.jobs.jobSpecific }}
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ include "mirror.fullname" . }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: {{ .Values.global.appName }}
+    app.kubernetes.io/name: {{ include "mirror.name" . }}
+    helm.sh/chart: {{ include "mirror.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+
+spec:
+  concurrencyPolicy: {{ .Values.jobs.concurrencyPolicy }}
+  failedJobsHistoryLimit: {{ .Values.jobs.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: {{ .Values.mirror }}
+            cron: {{ .Values.jobs.name }}
+        
+        spec:
+        {{- if hasKey .Values.global "serviceAccount" }}
+        {{- if hasKey .Values.global.serviceAccount "name" }}
+          serviceAccountName: {{ .Values.global.serviceAccount.name }}
+        {{- else }}
+          serviceAccountName: {{ $jobs.name }}
+        {{- end }}
+        {{- end }}
+        {{- if hasKey .Values.jobs "securityContext" }}
+          {{- if .Values.jobs.securityContext.runAsUser }}
+          securityContext:
+            runAsUser: {{ .Values.jobs.securityContext.runAsUser }}
+            {{- if .Values.jobs.securityContext.runAsGroup }}
+            runAsGroup: {{ .Values.jobs.securityContext.runAsGroup }}
+            {{- end }}
+            {{- if .Values.jobs.securityContext.fsGroup }}
+            fsGroup: {{ .Values.jobs.securityContext.fsGroup }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+          containers:
+          - image: "{{ .Values.jobs.image.repository }}:{{ .Values.jobs.image.tag }}"
+            imagePullPolicy: {{ .Values.jobs.image.imagePullPolicy }}
+            name: {{ .Values.jobs.name }}
+            {{- with .Values.jobs.env }}
+            env:
+{{ toYaml . | indent 12 }}
+            {{- end }}
+            {{- with .Values.jobs.envFrom }}
+            envFrom:
+{{ toYaml . | indent 12 }}
+            {{- end }}
+            {{- if $jobs.command }}
+            command: {{ $jobs.command }}
+            {{- end }}
+            {{- with .Values.jobs.args }}
+            args:
+{{ toYaml . | indent 12 }}
+              {{- end }}
+            {{- with .Values.jobs.resources }}
+            resources:
+{{ toYaml . | indent 14 }}
+            {{- end }}
+            {{- with $jobs.mount }}
+            volumeMounts:
+{{ toYaml . | indent 12 }}
+            {{- end }}
+          {{- with .Values.jobs.nodeSelector }}
+          nodeSelector:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          {{- with .Values.jobs.affinity }}
+          affinity:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          {{- with .Values.jobs.tolerations }}
+          tolerations:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          restartPolicy: {{ .Values.jobs.restartPolicy }}
+          {{- with $jobs.volumes }}
+          volumes:
+          - name: nas
+            nfs:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+  schedule: {{ $jobs.schedule | quote }}
+  successfulJobsHistoryLimit: {{ .Values.jobs.successfulJobsHistoryLimit }}
+{{- end }}
