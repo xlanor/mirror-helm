@@ -7,12 +7,11 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: {{ include "mirror.fullname" . }}
+  name: {{ .Values.global.appName }}
   namespace: {{ .Values.global.namespace }}
   labels:
     app: {{ .Values.global.appName }}
-    app.kubernetes.io/name: {{ include "mirror.name" . }}
-    helm.sh/chart: {{ include "mirror.chart" . }}
+    app.kubernetes.io/name: {{ .Values.global.appName }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 
