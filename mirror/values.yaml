@@ -74,7 +74,7 @@ jobs:
       schedule: "24 16 * * *"
       command: ["/var/run/sync.sh"]
       args: 
-        - "rsync://mirror.zorinos.com/isos"
+        - "rsync://ftp.belnet.be/arcolinux"
         - "/data"
       volumes:
         server: 10.20.0.10
