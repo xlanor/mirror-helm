@@ -21,7 +21,7 @@ jobs:
   image:
     repository: ghcr.io/xlanor/sync-image:1.0.0
     pullPolicy: IfNotPresent
-  name: "sync mirror"
+  name: "mirrorsync"
   resources:
     limits:
       cpu: 250m
