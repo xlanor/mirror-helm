@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mirror-root
+  namespace: argocd
+spec:
+  project: default
+  source:
+    path: mirror
+    targetRevision: HEAD
+    repoURL: git@github.com:xlanor/mirror-helm.git
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mirror
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: true
+    managedNamespaceMetadata:
+      labels: # The labels to set on the application namespace
+        istio-injection: enabled 
+      annotations: # The annotations to set on the application namespace
+        argocd.argoproj.io/hook: PreSync
+        argocd.argoproj.io/sync-wave: "-1"
+    syncOptions:
+    - CreateNamespace=true
+    - PrunePropagationPolicy=foreground
