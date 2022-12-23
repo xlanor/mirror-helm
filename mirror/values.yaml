@@ -73,7 +73,9 @@ jobs:
     - name: "arcosync"
       schedule: "24 16 * * *"
       command: ["/var/run/sync.sh"]
-      args: ["rsync://mirror.zorinos.com/isos", "/data"]
+      args: 
+        - "rsync://mirror.zorinos.com/isos"
+        - "/data"
       volumes:
         server: 10.20.0.10
         path: "/export/arcolinux"
@@ -83,7 +85,9 @@ jobs:
     - name: "zorinsync"
       schedule: "30 13 * * *"
       command: ["/var/run/sync.sh"]
-      args: [ "rsync://mirror.zorinos.com/isos", "/data"]
+      args: 
+        - "rsync://mirror.zorinos.com/isos"
+        - "/data"
       volumes:
         server: 10.20.0.10
         path: "/export/zorinos"
@@ -93,7 +97,9 @@ jobs:
     - name: "mxlinux"
       schedule: "55 15 * * *"
       command: ["/var/run/sync.sh"]
-      args: [ "rsync://mirrors.rit.edu/mxlinux", "/data"]
+      args: 
+        - "rsync://mirrors.rit.edu/mxlinux"
+        - "/data"
       volumes:
         server: 10.20.0.10
         path: "/export/mxlinux"

@@ -61,7 +61,7 @@ spec:
             {{- if $jobs.command }}
             command: {{ $jobs.command }}
             {{- end }}
-            {{- with $.Values.jobs.args }}
+            {{- with $jobs.args }}
             args:
 {{ toYaml . | indent 12 }}
               {{- end }}
