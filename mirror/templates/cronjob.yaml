@@ -25,7 +25,8 @@ spec:
           labels:
             app: {{ $.Values.global.appName }}
             cron: {{ $jobs.name }}
-        
+          annotations:
+            sidecar.istio.io/inject: "false"
         spec:
         {{- if hasKey $.Values.global "serviceAccount" }}
         {{- if hasKey $.Values.global.serviceAccount "name" }}
