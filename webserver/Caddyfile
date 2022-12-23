@@ -1,0 +1,9 @@
+{
+    auto_https disable_redirects
+}
+mirror.kaolin.uk :80, :443 {
+    file_server {
+        browse /etc/caddy/template.html
+        root  /var/www/mirror
+    }
+}

@@ -17,6 +17,37 @@ global:
     # If not set and create is true, a name is generated using the fullname template
     name: "linuxmirror"
 
+webserver:
+  image:
+    repository: ghcr.io/xlanor/mirror-caddy
+    tag: 1.0.0
+    pullPolicy: IfNotPresent
+  name: "mirrorweb"
+  resources:
+    limits:
+      cpu: 250m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 1Gi
+  restartPolicy: OnFailure
+  securityContext:
+    enabled: true
+    fsGroup: 1000
+    runAsUser: 1000
+  volumes:
+    - name: mirrordata
+      nfs:
+        server: 10.20.0.10
+        path: "/export/mirror"
+    - name: mirrorconfig
+      nfs:
+        server: 10.20.0.10
+        path: "/export/mirrorconfig"
+  mount:
+    - name: mirrordata
+      mountPath: /var/www/mirror
+  
 jobs:
   image:
     repository: ghcr.io/xlanor/sync-image
@@ -41,7 +72,8 @@ jobs:
   jobSpecific:
     - name: "arcosync"
       schedule: "06 12 * * *"
-      command: ["/var/run/sync.sh", "rsync://mirror.zorinos.com/isos", "/data"]
+      command: ["/var/run/sync.sh"]
+      args: ["rsync://mirror.zorinos.com/isos", "/data"]
       volumes:
         server: 10.20.0.10
         path: "/export/arcolinux"
@@ -50,7 +82,8 @@ jobs:
           mountPath: /data
     - name: "zorinsync"
       schedule: "30 13 * * *"
-      command: ["/var/run/sync.sh", "rsync://mirror.zorinos.com/isos", "/data"]
+      command: ["/var/run/sync.sh"]
+      args: [ "rsync://mirror.zorinos.com/isos", "/data"]
       volumes:
         server: 10.20.0.10
         path: "/export/zorinos"
@@ -58,8 +91,9 @@ jobs:
         - name: nas
           mountPath: /data
     - name: "mxlinux"
-      schedule: "15 12 * * *"
-      command: ["/var/run/sync.sh", "rsync://mirrors.rit.edu/mxlinux", "/data"]
+      schedule: "55 15 * * *"
+      command: ["/var/run/sync.sh"]
+      args: [ "rsync://mirrors.rit.edu/mxlinux", "/data"]
       volumes:
         server: 10.20.0.10
         path: "/export/mxlinux"
