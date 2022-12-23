@@ -38,7 +38,7 @@ jobs:
     fsGroup: 1000
     runAsUser: 1000
   jobSpecific:
-    - name: "arco-linux-sync"
+    - name: "arcosync"
       schedule: "0 23 * * *"
       command: ["/var/run/sync.sh", "rsync://mirror.zorinos.com/isos", "/data"]
       volumes:
