@@ -23,7 +23,7 @@ spec:
       template:
         metadata:
           labels:
-            app: {{ $.Values.mirror }}
+            app: {{ $.Values.global.appName }}
             cron: {{ $jobs.name }}
         
         spec:
