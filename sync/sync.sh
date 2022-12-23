@@ -1,3 +1,4 @@
+#!/bin/bash
 # execute as a sync script
 
 if [[ -z "$1" ]] || [[ -z "$2" ]]; then

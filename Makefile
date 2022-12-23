@@ -1,5 +1,5 @@
 .ONESHELL:
-SYNC_VERSION=1.0.0
+SYNC_VERSION=1.0.1
 SYNC_IMAGE=ghcr.io/xlanor/sync-image
 
 # phony rules

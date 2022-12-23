@@ -51,7 +51,7 @@ webserver:
 jobs:
   image:
     repository: ghcr.io/xlanor/sync-image
-    tag: 1.0.0
+    tag: 1.0.1
     pullPolicy: IfNotPresent
   name: "mirrorsync"
   resources:
@@ -71,7 +71,7 @@ jobs:
     runAsUser: 1000
   jobSpecific:
     - name: "arcosync"
-      schedule: "06 12 * * *"
+      schedule: "24 16 * * *"
       command: ["/var/run/sync.sh"]
       args: ["rsync://mirror.zorinos.com/isos", "/data"]
       volumes:
