@@ -71,7 +71,7 @@ spec:
             {{- end }}
             {{- with $jobs.mount }}
             volumeMounts:
-{{ toYaml . | indent 12 }}
+{{ toYaml . | indent 14 }}
             {{- end }}
           {{- with $.Values.jobs.nodeSelector }}
           nodeSelector:

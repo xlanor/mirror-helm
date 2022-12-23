@@ -44,5 +44,7 @@ jobs:
       volumes:
         server: 10.20.0.10
         path: "/export/arcolinux"
-        accessMode: ReadWriteMany
+      mount:
+        - name: nas
+          mountPath: /data
 
