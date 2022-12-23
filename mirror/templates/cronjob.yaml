@@ -7,11 +7,11 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: {{ $.Values.global.appName }}
+  name: {{ $jobs.name }}
   namespace: {{ $.Values.global.namespace }}
   labels:
-    app: {{ $.Values.global.appName }}
-    app.kubernetes.io/name: {{ $.Values.global.appName }}
+    app: {{ $jobs.name }}
+    app.kubernetes.io/name: {{ $jobs.name }}
     app.kubernetes.io/instance: {{ $.Release.Name }}
     app.kubernetes.io/managed-by: {{ $.Release.Service }}
 
@@ -24,7 +24,7 @@ spec:
         metadata:
           labels:
             app: {{ $.Values.mirror }}
-            cron: {{ $.Values.jobs.name }}
+            cron: {{ $jobs.name }}
         
         spec:
         {{- if hasKey $.Values.global "serviceAccount" }}
@@ -90,7 +90,7 @@ spec:
           volumes:
           - name: nas
             nfs:
-{{ toYaml . | indent 12 }}
+{{ toYaml . | indent 14 }}
           {{- end }}
   schedule: {{ $jobs.schedule | quote }}
   successfulJobsHistoryLimit: {{ $.Values.jobs.successfulJobsHistoryLimit }}
