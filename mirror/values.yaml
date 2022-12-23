@@ -71,7 +71,7 @@ jobs:
     runAsUser: 1000
   jobSpecific:
     - name: "arcosync"
-      schedule: "24 16 * * *"
+      schedule: "45 19 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://ftp.belnet.be/arcolinux"
