@@ -47,4 +47,22 @@ jobs:
       mount:
         - name: nas
           mountPath: /data
+    - name: "zorinsync"
+      schedule: "0 23 * * *"
+      command: ["/var/run/sync.sh", "rsync://mirror.zorinos.com/isos", "/data"]
+      volumes:
+        server: 10.20.0.10
+        path: "/export/zorinos"
+      mount:
+        - name: nas
+          mountPath: /data
+    - name: "mxlinux"
+      schedule: "0 23 * * *"
+      command: ["/var/run/sync.sh", "rsync://mirrors.rit.edu/mxlinux", "/data"]
+      volumes:
+        server: 10.20.0.10
+        path: "/export/mxlinux"
+      mount:
+        - name: nas
+          mountPath: /data
 
