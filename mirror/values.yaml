@@ -39,11 +39,11 @@ webserver:
     - name: mirrordata
       nfs:
         server: 10.20.0.10
-        path: "/export/mirror"
+        path: "/exports/mirror"
     - name: mirrorconfig
       nfs:
         server: 10.20.0.10
-        path: "/export/mirrorconfig"
+        path: "/exports/mirrorconfig"
   mount:
     - name: mirrordata
       mountPath: /var/www/mirror
@@ -78,7 +78,7 @@ jobs:
         - "/data"
       volumes:
         server: 10.20.0.10
-        path: "/export/arcolinux"
+        path: "/exports/arcolinux"
       mount:
         - name: nas
           mountPath: /data
@@ -90,7 +90,7 @@ jobs:
         - "/data"
       volumes:
         server: 10.20.0.10
-        path: "/export/zorinos"
+        path: "/exports/zorinos"
       mount:
         - name: nas
           mountPath: /data
@@ -102,7 +102,7 @@ jobs:
         - "/data"
       volumes:
         server: 10.20.0.10
-        path: "/export/mxlinux"
+        path: "/exports/mxlinux"
       mount:
         - name: nas
           mountPath: /data
