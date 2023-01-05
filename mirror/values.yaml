@@ -33,8 +33,7 @@ webserver:
   restartPolicy: OnFailure
   securityContext:
     enabled: true
-    fsGroup: 1000
-    runAsUser: 1000
+    fsGroup: 4001
   volumes:
     - name: mirrordata
       nfs:
@@ -67,8 +66,9 @@ jobs:
   restartPolicy: OnFailure
   securityContext:
     enabled: true
-    fsGroup: 1000
-    runAsUser: 1000
+    fsGroup: 4001
+    runAsUser: 1002
+    runAsGroup: 4001
   jobSpecific:
     - name: "arcosync"
       schedule: "47 19 * * *"
