@@ -90,7 +90,7 @@ jobs:
         - "/data"
       volumes:
         server: 10.20.0.10
-        path: "/exports/zorinos"
+        path: "/exports/zorin"
       mount:
         - name: nas
           mountPath: /data
@@ -103,6 +103,30 @@ jobs:
       volumes:
         server: 10.20.0.10
         path: "/exports/mxlinux"
+      mount:
+        - name: nas
+          mountPath: /data
+    - name: "archlinux"
+      schedule: "10 12 * * *"
+      command: ["/var/run/sync.sh"]
+      args: 
+        - "rsync://mirrors.ocf.berkeley.edu/archlinux"
+        - "/data"
+      volumes:
+        server: 10.20.0.10
+        path: "/exports/archlinux"
+      mount:
+        - name: nas
+          mountPath: /data
+    - name: "endeavourOS"
+      schedule: "50 12 * * *"
+      command: ["/var/run/sync.sh"]
+      args: 
+        - "rsync://mirror.alpix.eu/endeavouros
+        - "/data"
+      volumes:
+        server: 10.20.0.10
+        path: "/exports/archlinux"
       mount:
         - name: nas
           mountPath: /data
