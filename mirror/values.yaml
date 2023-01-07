@@ -118,7 +118,7 @@ jobs:
       mount:
         - name: nas
           mountPath: /data
-    - name: "endeavourOS"
+    - name: "endeavour"
       schedule: "50 12 * * *"
       command: ["/var/run/sync.sh"]
       args: 
