@@ -52,7 +52,7 @@ spec:
             imagePullPolicy: {{ $.Values.jobs.image.imagePullPolicy }}
             name: {{ $.Values.jobs.name }}
             {{- with $.Values.jobs.env }}
-            env:
+            env: 
 {{ toYaml . | indent 12 }}
             {{- end }}
             {{- with $.Values.jobs.envFrom }}

@@ -69,6 +69,15 @@ jobs:
     fsGroup: 4001
     runAsUser: 1002
     runAsGroup: 4001
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: name
+            operator: In
+            values:
+            - thunderbird
   jobSpecific:
     - name: "arcosync"
       schedule: "47 19 * * *"
