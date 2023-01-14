@@ -135,7 +135,7 @@ jobs:
         - "/data"
       volumes:
         server: 10.20.0.10
-        path: "/exports/archlinux"
+        path: "/exports/endeavouros"
       mount:
         - name: nas
           mountPath: /data
