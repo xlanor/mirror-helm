@@ -116,7 +116,7 @@ jobs:
         - name: nas
           mountPath: /data
     - name: "archlinux"
-      schedule: "10 12 * * *"
+      schedule: "50 13 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://mirrors.ocf.berkeley.edu/archlinux"
@@ -128,7 +128,7 @@ jobs:
         - name: nas
           mountPath: /data
     - name: "endeavour"
-      schedule: "50 12 * * *"
+      schedule: "45 13 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://mirror.alpix.eu/endeavouros"
