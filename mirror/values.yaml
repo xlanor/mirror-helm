@@ -116,7 +116,7 @@ jobs:
         - name: nas
           mountPath: /data
     - name: "archlinux"
-      schedule: "50 13 * * *"
+      schedule: "52 04 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://lon.mirror.rackspace.com/archlinux"
