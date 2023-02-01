@@ -116,11 +116,7 @@ jobs:
         - name: nas
           mountPath: /data
     - name: "archlinux"
-<<<<<<< HEAD
       schedule: "10 */6 * * *"
-=======
-      schedule: "52 04 * * *"
->>>>>>> origin/master
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://lon.mirror.rackspace.com/archlinux"
@@ -132,11 +128,7 @@ jobs:
         - name: nas
           mountPath: /data
     - name: "endeavour"
-<<<<<<< HEAD
       schedule: "50 */7 * * *"
-=======
-      schedule: "45 13 * * *"
->>>>>>> origin/master
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://mirror.alpix.eu/endeavouros"
