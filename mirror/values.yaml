@@ -62,7 +62,7 @@ jobs:
       memory: 1Gi
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 3
-  concurrencyPolicy: Allow
+  concurrencyPolicy: Forbid
   restartPolicy: OnFailure
   securityContext:
     enabled: true
@@ -80,7 +80,7 @@ jobs:
             - thunderbird
   jobSpecific:
     - name: "arcosync"
-      schedule: "47 19 * * *"
+      schedule: "47 */3 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://ftp.belnet.be/arcolinux"
@@ -104,7 +104,7 @@ jobs:
         - name: nas
           mountPath: /data
     - name: "mxlinux"
-      schedule: "55 15 * * *"
+      schedule: "55 */8 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://mirrors.rit.edu/mxlinux"
@@ -116,7 +116,7 @@ jobs:
         - name: nas
           mountPath: /data
     - name: "archlinux"
-      schedule: "10 12 * * *"
+      schedule: "10 */6 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://mirrors.ocf.berkeley.edu/archlinux"
@@ -128,7 +128,7 @@ jobs:
         - name: nas
           mountPath: /data
     - name: "endeavour"
-      schedule: "50 12 * * *"
+      schedule: "50 */7 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://mirror.alpix.eu/endeavouros"
@@ -139,4 +139,3 @@ jobs:
       mount:
         - name: nas
           mountPath: /data
-
