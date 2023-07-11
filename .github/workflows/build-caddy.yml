@@ -25,4 +25,4 @@ jobs:
       - name: 'Build Webserver Image'
         run: |
           docker build . -f Dockerfile-caddy --tag ghcr.io/xlanor/caddy:${{ steps.get_version.outputs.VERSION }}
-          docker push ghcr.io/<your-GitHub-username>/caddy:${{ steps.get_version.outputs.VERSION }}
+          docker push ghcr.io/xlanor/caddy:${{ steps.get_version.outputs.VERSION }}
