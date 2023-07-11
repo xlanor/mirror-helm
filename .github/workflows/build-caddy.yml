@@ -3,16 +3,13 @@ on:
   push:
     tags:
     - "*" # Running this workflow for any tag
-defaults:
-  run:
-    working-directory: webserver
 
 jobs:
   push-webserver-image:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: './Store'
+        working-directory: './webserver'
     steps:
       - name: Get the version
         id: get_version
