@@ -3,9 +3,10 @@
 FROM alpine:3.18.2
 LABEL maintainer="Jingkai Tan <contact@jingk.ai>"
 
+ADD config /config
+
 RUN apk --no-cache add rsync && \
-    mkdir -p /config /data /log && \
-    cp /etc/rsyncd.conf /config
+    mkdir -p /config /data /log 
 
 EXPOSE 873
 
