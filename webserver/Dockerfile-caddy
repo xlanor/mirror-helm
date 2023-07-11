@@ -1,13 +1,29 @@
-FROM caddy:2.7-builder AS builder
+FROM caddy:2.7-builder-alpine AS builder
 
+RUN apk add -q --progress --update --no-cache git ca-certificates tzdata
+WORKDIR /caddy
+# Just leaving this here in case I ever decide to go back and not rely on raw R3 LE
+# Doesn't really matter because CF now issues R1 LE anyway
 RUN xcaddy build \
     --with github.com/caddy-dns/cloudflare
 
-FROM caddy:2.7
+FROM scratch
 
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
+
+ENV HOME=/caddydir \
+    CADDYPATH=/etc/caddy/data \
+    TZ=Asia/Singapore
+
 RUN mkdir -p /etc/caddy
 COPY template.html /etc/caddy
 COPY Caddyfile /etc/caddy
 
- 
+USER 1000
+
+ENTRYPOINT ["/caddy"]
+CMD ["run","--config","/etc/caddy/Caddyfile"]
+COPY --chown=1000 Caddyfile /caddydir/Caddyfile
+COPY --from=builder --chown=1000 /caddy/caddy /caddy
