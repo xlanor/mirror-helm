@@ -13,8 +13,6 @@ ENV HOME=/caddydir \
     CADDYPATH=/etc/caddy/data \
     TZ=Asia/Singapore
 
-RUN mkdir -p /caddydir
-
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=builder --chown=1000 /caddy/caddy /caddy
