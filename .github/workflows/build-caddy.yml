@@ -2,7 +2,7 @@ name: Build and publish
 on: 
   push:
     tags:
-    - "*" # Running this workflow for any tag
+    - "caddy*" # Running this workflow for any tag
 
 jobs:
   push-webserver-image:
