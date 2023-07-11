@@ -15,12 +15,12 @@ ENV HOME=/caddydir \
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
-COPY --from=builder --chown=1000 /caddy/caddy /caddy
+COPY --from=builder --chown=1002 /caddy/caddy /caddy
 
-COPY --chown=1000 template.html /caddydir/caddy
-COPY --chown=1000 Caddyfile /caddydir/caddy
+COPY --chown=1002 template.html /caddydir/caddy
+COPY --chown=1002 Caddyfile /caddydir/caddy
 
-USER 1000
+USER 1002
 
 ENTRYPOINT ["/caddy"]
 CMD ["run","--config","/caddydir/Caddyfile"]
