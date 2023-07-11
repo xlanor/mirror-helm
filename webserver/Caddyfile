@@ -3,13 +3,13 @@
 }
 mirror.kaolin.uk :80, :443 {
     file_server {
-        browse /etc/caddy/template.html
+        browse /caddydir/template.html
         root  /var/www/mirror
     }
 }
 mirror.jingk.ai :80, :443 {
     file_server {
-        browse /etc/caddy/template.html
+        browse /caddydir/template.html
         root  /var/www/mirror
     }
 }
