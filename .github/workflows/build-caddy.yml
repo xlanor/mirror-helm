@@ -8,14 +8,24 @@ defaults:
     working-directory: webserver
 
 jobs:
-  build-and-publish-tag:
+  push-webserver-image:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: './Store'
     steps:
-    - uses: actions/checkout@v2.5.0 # Checking out the repo
-    - name: Build and publish Docker image tagged according to a git-tag
-      uses: VaultVulp/gp-docker-action@1.6.0
-      with:
-          github-token: ${{ secrets.GITHUB_TOKEN }} # Provide GITHUB_TOKEN to login into the GitHub Packages
-          image-name: caddy
-          extract-git-tag: true 
-          dockerfile: Dockerfile-caddy
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@main
+      - name: 'Login to GitHub Container Registry'
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+      - name: 'Build Webserver Image'
+        run: |
+          docker build . -f Dockerfile-caddy --tag ghcr.io/xlanor/caddy:${{ steps.get_version.outputs.VERSION }}
+          docker push ghcr.io/<your-GitHub-username>/caddy:${{ steps.get_version.outputs.VERSION }}
