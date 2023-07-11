@@ -139,3 +139,15 @@ jobs:
       mount:
         - name: nas
           mountPath: /data
+    - name: "lyx"
+      schedule: " */12 * * *"
+      command: ["/var/run/sync.sh"]
+      args: 
+        - "rsync://ftp.lyx.org/ftp/pub/lyx"
+        - "/data"
+      volumes:
+        server: 10.20.0.10
+        path: "/exports/lyx"
+      mount:
+        - name: nas
+          mountPath: /data 
