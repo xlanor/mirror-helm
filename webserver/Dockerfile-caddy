@@ -9,21 +9,21 @@ RUN xcaddy build \
 
 FROM scratch
 
-COPY --from=builder /usr/bin/caddy /usr/bin/caddy
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
-
 ENV HOME=/caddydir \
     CADDYPATH=/etc/caddy/data \
     TZ=Asia/Singapore
 
-RUN mkdir -p /etc/caddy
-COPY template.html /etc/caddy
-COPY Caddyfile /etc/caddy
+RUN mkdir -p /caddydir
+
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
+COPY --chown=1000 Caddyfile /caddydir/Caddyfile
+COPY --from=builder --chown=1000 /caddy/caddy /caddy
+
+COPY template.html /caddydir/caddy
+COPY Caddyfile /caddydir/caddy
 
 USER 1000
 
 ENTRYPOINT ["/caddy"]
-CMD ["run","--config","/etc/caddy/Caddyfile"]
-COPY --chown=1000 Caddyfile /caddydir/Caddyfile
-COPY --from=builder --chown=1000 /caddy/caddy /caddy
+CMD ["run","--config","/caddydir/Caddyfile"]
