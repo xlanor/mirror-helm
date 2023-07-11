@@ -17,11 +17,10 @@ RUN mkdir -p /caddydir
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
-COPY --chown=1000 Caddyfile /caddydir/Caddyfile
 COPY --from=builder --chown=1000 /caddy/caddy /caddy
 
-COPY template.html /caddydir/caddy
-COPY Caddyfile /caddydir/caddy
+COPY --chown=1000 template.html /caddydir/caddy
+COPY --chown=1000 Caddyfile /caddydir/caddy
 
 USER 1000
 
