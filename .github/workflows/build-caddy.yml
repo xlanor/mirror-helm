@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: './webserver'
+        working-directory: webserver
     steps:
       - name: Get the version
         id: get_version
