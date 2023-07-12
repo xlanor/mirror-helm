@@ -127,6 +127,18 @@ jobs:
       mount:
         - name: nas
           mountPath: /data
+    - name: "almalinux"
+      schedule: "50 */9 * * *"
+      command: ["/var/run/sync.sh"]
+      args: 
+        - "rsync://mirror.serverfreak.com/almalinux" 
+        - "/data"
+      volumes:
+        server: 10.20.0.10
+        path: "/exports/almalinux"
+      mount:
+        - name: nas
+          mountPath: /data
     - name: "endeavour"
       schedule: "50 */7 * * *"
       command: ["/var/run/sync.sh"]
@@ -136,6 +148,18 @@ jobs:
       volumes:
         server: 10.20.0.10
         path: "/exports/endeavouros"
+      mount:
+        - name: nas
+          mountPath: /data
+    - name: "rocky"
+      schedule: "43 */10 * * *"
+      command: ["/var/run/sync.sh"]
+      args: 
+        - "rsync://sg.rpmdb.org/rocky"
+        - "/data"
+      volumes:
+        server: 10.20.0.10
+        path: "/exports/rocky"
       mount:
         - name: nas
           mountPath: /data
