@@ -1,0 +1,31 @@
+# Taken from https://github.com/mettke/dockerfiles/tree/master/rsyncd-alpine
+# not updated to latest container for over a year.
+FROM alpine:3.18.2 as builder
+
+ADD config /config
+
+RUN apk --no-cache add rsync ca-certificates tzdata
+RUN mkdir /var/run
+
+FROM scratch
+
+ENV HOME=/rsyncddir \
+    CADDYPATH=/etc/caddy/data \
+    TZ=Asia/Singapore
+    
+EXPOSE 873
+
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
+COPY --from=builder --chown=1002 /usr/bin/rsync /rsync
+COPY --from=builder --chown=1002 /var/run /var/run
+COPY --chown=1002 config/motd /rsyncddir/motd
+COPY --chown=1002 config/rsyncd.conf /rsyncddir/rsyncd.conf
+
+
+ENTRYPOINT [ "/rsync", \
+    "--daemon", \
+    "--no-detach", \
+    "--config=/rsyncddir/rsyncd.conf", \
+    "--dparam=pidfile=/var/run/rsyncd.pid" \
+]
