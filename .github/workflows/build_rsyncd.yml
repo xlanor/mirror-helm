@@ -24,5 +24,5 @@ jobs:
           password: ${{secrets.GITHUB_TOKEN}}
       - name: 'Build rsyncd Image'
         run: |
-          docker build . -f Dockerfile_rsyncd --tag ghcr.io/xlanor/rsyncd:${{ steps.get_version.outputs.VERSION }}
+          docker build . -f Dockerfile_rsyncd-scratch --tag ghcr.io/xlanor/rsyncd:${{ steps.get_version.outputs.VERSION }}
           docker push ghcr.io/xlanor/rsyncd:${{ steps.get_version.outputs.VERSION }}
