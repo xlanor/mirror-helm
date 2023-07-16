@@ -1,13 +1,13 @@
 {
     auto_https disable_redirects
 }
-mirror.kaolin.uk :80, :443 {
+mirror.kaolin.uk {
     file_server {
         browse /caddydir/template.html
         root  /var/www/mirror
     }
 }
-mirror.jingk.ai :80, :443 {
+mirror.jingk.ai {
     file_server {
         browse /caddydir/template.html
         root  /var/www/mirror
