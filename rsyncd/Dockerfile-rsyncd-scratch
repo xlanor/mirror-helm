@@ -21,6 +21,7 @@ RUN curl -L https://download.samba.org/pub/rsync/src/$RSYNC.tar.gz -o $RSYNC.tar
     make; \
     strip rsync;
 
+RUN useradd -u 1002 nobody
 
 FROM alpine:3.18.2 as builder
 
@@ -40,10 +41,12 @@ EXPOSE 873
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
+COPY --from=rsync /etc/passwd /etc/passwd
 COPY --from=rsync --chown=1002 /src/$RSYNC/rsync /rsync
 COPY --from=rsync --chown=1002 /var/run /var/run
 COPY --from=builder --chown=1002 /config/motd /rsyncddir/motd
 COPY --from=builder --chown=1002 /config/rsyncd.conf /rsyncddir/rsyncd.conf
+
 
 
 ENTRYPOINT [ "/rsync", \
