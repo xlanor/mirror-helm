@@ -17,6 +17,7 @@ RUN apt-get -y install acl liblz4-dev libacl1-dev attr libattr1-dev libxxhash-de
 
 WORKDIR /artifact
 COPY --chmod=644 /config/passwd /artifact/passwd_fixed
+COPY --chmod=644 /config/group /artifact/group_fixed
 
 WORKDIR /src
 # Build rsync from source
@@ -46,6 +47,7 @@ EXPOSE 873
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=rsync /artifact/passwd_fixed /etc/passwd
+COPY --from=rsync /artifact/group_fixed /etc/group
 COPY --from=rsync --chown=1002 /artifact/rsync /rsync
 COPY --from=rsync --chown=1002 /var/run /var/run
 COPY --from=builder --chown=1002 /config/motd /rsyncddir/motd
