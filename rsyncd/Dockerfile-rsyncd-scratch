@@ -12,6 +12,9 @@ RUN apt-get -y install dpkg-dev
 RUN apt-get -y build-dep rsync
 RUN apt-get -y install curl gcc g++ gawk autoconf automake python3-cmarkgfm 
 RUN apt-get -y install acl liblz4-dev libacl1-dev attr libattr1-dev libxxhash-dev libzstd-dev libssl-dev
+WORKDIR /artifact
+RUN echo "nobody:*:65534:65534:nobody:/_nonexistent:/bin/false" > passwd
+COPY --chmod=644 --chown=root:root /artifact/passwd /artifact/passwd_fixed
 
 WORKDIR /src
 # Build rsync from source
@@ -19,9 +22,9 @@ RUN curl -L https://download.samba.org/pub/rsync/src/$RSYNC.tar.gz -o $RSYNC.tar
     tar zxf $RSYNC.tar.gz && cd $RSYNC; \
     ./configure CFLAGS="-static" ; \
     make; \
-    strip rsync;
+    strip rsync; \ 
+    mv rsync /artifact/rsync;
 
-RUN useradd -u 1002 nobody
 
 FROM alpine:3.18.2 as builder
 
@@ -33,16 +36,15 @@ FROM scratch
 
 ENV HOME=/rsyncddir \
     CADDYPATH=/etc/caddy/data \
-    TZ=Asia/Singapore\
-    RSYNC=rsync-3.2.7
+    TZ=Asia/Singapore
 
 
 EXPOSE 873
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
-COPY --from=rsync /etc/passwd /etc/passwd
-COPY --from=rsync --chown=1002 /src/$RSYNC/rsync /rsync
+COPY --from=rsync /artifact/passwd_fixed /etc/passwd
+COPY --from=rsync --chown=1002 /artifact/rsync /rsync
 COPY --from=rsync --chown=1002 /var/run /var/run
 COPY --from=builder --chown=1002 /config/motd /rsyncddir/motd
 COPY --from=builder --chown=1002 /config/rsyncd.conf /rsyncddir/rsyncd.conf
