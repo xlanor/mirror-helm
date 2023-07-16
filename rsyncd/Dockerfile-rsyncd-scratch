@@ -1,25 +1,49 @@
-# Taken from https://github.com/mettke/dockerfiles/tree/master/rsyncd-alpine
-# not updated to latest container for over a year.
+
+FROM ubuntu:jammy AS rsync
+
+# Set to targeted rsync version
+ENV RSYNC=rsync-3.2.7
+
+# Setup build environment
+ENV DEBIAN_FRONTEND=noninteractive
+RUN sed -i 's/^#.deb-src/deb-src/g' /etc/apt/sources.list
+RUN apt update
+RUN apt-get -y install dpkg-dev
+RUN apt-get -y build-dep rsync
+RUN apt-get -y install curl gcc g++ gawk autoconf automake python3-cmarkgfm 
+RUN apt-get -y install acl liblz4-dev libacl1-dev attr libattr1-dev libxxhash-dev libzstd-dev libssl-dev
+
+WORKDIR /src
+# Build rsync from source
+RUN curl -L https://download.samba.org/pub/rsync/src/$RSYNC.tar.gz -o $RSYNC.tar.gz; \
+    tar zxf $RSYNC.tar.gz && cd $RSYNC; \
+    ./configure CFLAGS="-static" ; \
+    make; \
+    strip rsync;
+
+
 FROM alpine:3.18.2 as builder
 
-ADD config /config
-
 RUN apk --no-cache add rsync ca-certificates tzdata
+
+ADD config /config
 
 FROM scratch
 
 ENV HOME=/rsyncddir \
     CADDYPATH=/etc/caddy/data \
-    TZ=Asia/Singapore
-    
+    TZ=Asia/Singapore\
+    RSYNC=rsync-3.2.7
+
+
 EXPOSE 873
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
-COPY --from=builder --chown=1002 /usr/bin/rsync /rsync
-COPY --from=builder --chown=1002 /var/run /var/run
-COPY --chown=1002 config/motd /rsyncddir/motd
-COPY --chown=1002 config/rsyncd.conf /rsyncddir/rsyncd.conf
+COPY --from=rsync --chown=1002 /src/$RSYNC/rsync /rsync
+COPY --from=rsync --chown=1002 /var/run /var/run
+COPY --from=builder --chown=1002 /config/motd /rsyncddir/motd
+COPY --from=builder --chown=1002 /config/rsyncd.conf /rsyncddir/rsyncd.conf
 
 
 ENTRYPOINT [ "/rsync", \
@@ -27,4 +51,4 @@ ENTRYPOINT [ "/rsync", \
     "--no-detach", \
     "--config=/rsyncddir/rsyncd.conf", \
     "--dparam=pidfile=/var/run/rsyncd.pid" \
-]
+    ]
