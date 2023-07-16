@@ -4,6 +4,8 @@ FROM ubuntu:jammy AS rsync
 # Set to targeted rsync version
 ENV RSYNC=rsync-3.2.7
 
+ADD config /config
+
 # Setup build environment
 ENV DEBIAN_FRONTEND=noninteractive
 RUN sed -i 's/^#.deb-src/deb-src/g' /etc/apt/sources.list
@@ -12,9 +14,9 @@ RUN apt-get -y install dpkg-dev
 RUN apt-get -y build-dep rsync
 RUN apt-get -y install curl gcc g++ gawk autoconf automake python3-cmarkgfm 
 RUN apt-get -y install acl liblz4-dev libacl1-dev attr libattr1-dev libxxhash-dev libzstd-dev libssl-dev
+
 WORKDIR /artifact
-RUN echo "nobody:*:65534:65534:nobody:/_nonexistent:/bin/false" > /artifact/passwd
-COPY --chmod=644 /artifact/passwd /artifact/passwd_fixed
+COPY --chmod=644 /config/passwd /artifact/passwd_fixed
 
 WORKDIR /src
 # Build rsync from source
