@@ -6,13 +6,17 @@ mirror.kaolin.uk {
         browse /caddydir/template.html
         root  /var/www/mirror
     }
+    tls {
+	dns cloudflare {env.CF_API_TOKEN}
+    }
 }
 mirror.jingk.ai {
     file_server {
         browse /caddydir/template.html
         root  /var/www/mirror
     }
-}
-tls {
+    tls {
 	dns cloudflare {env.CF_API_TOKEN}
+    }
+
 }
