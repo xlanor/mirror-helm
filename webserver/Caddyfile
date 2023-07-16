@@ -13,3 +13,6 @@ mirror.jingk.ai {
         root  /var/www/mirror
     }
 }
+tls {
+	dns cloudflare {env.CF_API_TOKEN}
+}
