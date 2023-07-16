@@ -17,8 +17,8 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifi
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=builder --chown=1002 /caddy/caddy /caddy
 
-COPY --chown=1002 template.html /caddydir/caddy
-COPY --chown=1002 Caddyfile /caddydir/caddy
+COPY --chown=1002 template.html /caddydir/template.html
+COPY --chown=1002 Caddyfile /caddydir/Caddyfile
 
 USER 1002
 
