@@ -16,13 +16,13 @@ https://mirror.kaolin.uk {
 	dns cloudflare {env.CF_API_TOKEN}
     }
 }
-http://mirror.kaolin.uk {
+http://mirror.jingk.ai {
     file_server {
         browse /caddydir/template.html
         root  /var/www/mirror
     }
 }
-https://mirror.kaolin.uk {
+https://mirror.jingk.ai {
     file_server {
         browse /caddydir/template.html
         root  /var/www/mirror
