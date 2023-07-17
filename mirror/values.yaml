@@ -16,36 +16,6 @@ global:
     # The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template
     name: "linuxmirror"
-
-webserver:
-  image:
-    repository: ghcr.io/xlanor/mirror-caddy
-    tag: 1.0.0
-    pullPolicy: IfNotPresent
-  name: "mirrorweb"
-  resources:
-    limits:
-      cpu: 250m
-      memory: 1Gi
-    requests:
-      cpu: 250m
-      memory: 1Gi
-  restartPolicy: OnFailure
-  securityContext:
-    enabled: true
-    fsGroup: 4001
-  volumes:
-    - name: mirrordata
-      nfs:
-        server: 10.20.0.10
-        path: "/exports/mirror"
-    - name: mirrorconfig
-      nfs:
-        server: 10.20.0.10
-        path: "/exports/mirrorconfig"
-  mount:
-    - name: mirrordata
-      mountPath: /var/www/mirror
   
 jobs:
   image:
@@ -80,7 +50,7 @@ jobs:
             - thunderbird
   jobSpecific:
     - name: "arcosync"
-      schedule: "47 */3 * * *"
+      schedule: "17 */3 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://ftp.belnet.be/arcolinux"
@@ -104,7 +74,7 @@ jobs:
         - name: nas
           mountPath: /data
     - name: "mxlinux"
-      schedule: "55 */8 * * *"
+      schedule: "35 */4 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://mirrors.rit.edu/mxlinux"
@@ -116,7 +86,7 @@ jobs:
         - name: nas
           mountPath: /data
     - name: "archlinux"
-      schedule: "10 */6 * * *"
+      schedule: "10 */1 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://lon.mirror.rackspace.com/archlinux"
@@ -128,7 +98,7 @@ jobs:
         - name: nas
           mountPath: /data
     - name: "almalinux"
-      schedule: "50 */9 * * *"
+      schedule: "50 */3 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://mirror.serverfreak.com/almalinux" 
@@ -140,7 +110,7 @@ jobs:
         - name: nas
           mountPath: /data
     - name: "endeavour"
-      schedule: "50 */7 * * *"
+      schedule: "20 */3 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://mirror.alpix.eu/endeavouros"
@@ -152,7 +122,7 @@ jobs:
         - name: nas
           mountPath: /data
     - name: "rocky"
-      schedule: "43 */10 * * *"
+      schedule: "43 */1 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://sg.rpmdb.org/rocky"
