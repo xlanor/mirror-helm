@@ -1,7 +1,7 @@
 {
     auto_https disable_redirects
 }
-http://mirror.kaolin.uk
+http://mirror.kaolin.uk {
     file_server {
         browse /caddydir/template.html
         root  /var/www/mirror
@@ -16,7 +16,7 @@ https://mirror.kaolin.uk {
 	dns cloudflare {env.CF_API_TOKEN}
     }
 }
-http://mirror.kaolin.uk{
+http://mirror.kaolin.uk {
     file_server {
         browse /caddydir/template.html
         root  /var/www/mirror
