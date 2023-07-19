@@ -101,7 +101,7 @@ jobs:
       schedule: "50 */3 * * *"
       command: ["/var/run/sync.sh"]
       args: 
-        - "rsync://mirror.serverfreak.com/almalinux" 
+        - "rsync://rsync.repo.almalinux.org/almalinux" 
         - "/data"
       volumes:
         server: 10.20.0.10
