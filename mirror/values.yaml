@@ -73,7 +73,7 @@ jobs:
       mount:
         - name: nas
           mountPath: /data
-    - name: "Linuxmint"
+    - name: "linuxmint"
       schedule: "33 */3 * * *"
       command: ["/var/run/sync.sh"]
       args: 
@@ -85,7 +85,7 @@ jobs:
       mount:
         - name: nas
           mountPath: /data
-    - name: "Linuxmint ISO"
+    - name: "linuxmintiso"
       schedule: "22 */3 * * *"
       command: ["/var/run/sync.sh"]
       args: 
