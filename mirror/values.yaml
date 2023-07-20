@@ -73,6 +73,30 @@ jobs:
       mount:
         - name: nas
           mountPath: /data
+    - name: "Linuxmint"
+      schedule: "33 */3 * * *"
+      command: ["/var/run/sync.sh"]
+      args: 
+        - "rsync://rsync-packages.linuxmint.com/packages/"
+        - "/data"
+      volumes:
+        server: 10.20.0.10
+        path: "/exports/linuxmint"
+      mount:
+        - name: nas
+          mountPath: /data
+    - name: "Linuxmint ISO"
+      schedule: "22 */3 * * *"
+      command: ["/var/run/sync.sh"]
+      args: 
+        - "rsync://pub.linuxmint.com/pub/"
+        - "/data"
+      volumes:
+        server: 10.20.0.10
+        path: "/exports/linuxmint-iso"
+      mount:
+        - name: nas
+          mountPath: /data
     - name: "mxlinux"
       schedule: "35 */4 * * *"
       command: ["/var/run/sync.sh"]
