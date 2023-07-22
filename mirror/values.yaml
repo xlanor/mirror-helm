@@ -157,3 +157,15 @@ jobs:
       mount:
         - name: nas
           mountPath: /data
+    - name: "alpine"
+      schedule: "48 */5 * * *"
+      command: ["/var/run/sync.sh"]
+      args: 
+        - "rsync://rsync.alpinelinux.org/alpine"
+        - "/data"
+      volumes:
+        server: 10.20.0.10
+        path: "/exports/alpine"
+      mount:
+        - name: nas
+          mountPath: /data
