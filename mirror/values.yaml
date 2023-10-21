@@ -113,7 +113,7 @@ jobs:
       schedule: "10 */1 * * *"
       command: ["/var/run/sync.sh"]
       args: 
-        - "rsync://lon.mirror.rackspace.com/archlinux"
+        - "rsync://mirrors.kernel.org/archlinux"
         - "/data"
       volumes:
         server: 10.20.0.10
