@@ -49,18 +49,6 @@ jobs:
             values:
             - thunderbird
   jobSpecific:
-    - name: "arcosync"
-      schedule: "17 */3 * * *"
-      command: ["/var/run/sync.sh"]
-      args: 
-        - "rsync://ftp.belnet.be/arcolinux"
-        - "/data"
-      volumes:
-        server: 10.20.0.10
-        path: "/exports/arcolinux"
-      mount:
-        - name: nas
-          mountPath: /data
     - name: "zorinsync"
       schedule: "30 13 * * *"
       command: ["/var/run/sync.sh"]
@@ -142,18 +130,6 @@ jobs:
       volumes:
         server: 10.20.0.10
         path: "/exports/endeavouros"
-      mount:
-        - name: nas
-          mountPath: /data
-    - name: "rocky"
-      schedule: "43 */1 * * *"
-      command: ["/var/run/sync.sh"]
-      args: 
-        - "rsync://sg.rpmdb.org/rocky"
-        - "/data"
-      volumes:
-        server: 10.20.0.10
-        path: "/exports/rocky"
       mount:
         - name: nas
           mountPath: /data
