@@ -36,9 +36,9 @@ jobs:
   restartPolicy: OnFailure
   securityContext:
     enabled: true
-    fsGroup: 1000
-    runAsUser: 1000
-    runAsGroup: 1000
+    fsGroup: 4001
+    runAsUser: 1002
+    runAsGroup: 4001
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
