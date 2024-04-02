@@ -8,6 +8,7 @@ RUN xcaddy build \
     --with github.com/caddy-dns/cloudflare \
     --with github.com/porech/caddy-maxmind-geolocation
 
+WORKDIR /GeoLite
 RUN wget https://git.io/GeoLite2-ASN.mmdb
 RUN wget https://git.io/GeoLite2-Country.mmdb
 
@@ -23,6 +24,8 @@ COPY --from=builder --chown=1002 /caddy/caddy /caddy
 
 COPY --chown=1002 template.html /caddydir/template.html
 COPY --chown=1002 Caddyfile /caddydir/Caddyfile
+COPY --from=builder --chown=1002 /GeoLite/GeoLite2-ASN.mmdb /caddydir/GeoLite2-ASN.mmdb
+COPY --from=builder --chown=1002 /GeoLite/GeoLite2-Country.mmdb /caddydir/GeoLite2-Country.mmdb
 
 USER 1002
 

@@ -4,7 +4,7 @@
 http://mirror.kaolin.uk {
     @mygeofilter {
         maxmind_geolocation {
-        db_path "/usr/share/GeoIP/GeoLite2-Country.mmdb"
+        db_path "/caddydir/GeoLite2-Country.mmdb"
         deny_countries RU CN
         }
     }
@@ -17,7 +17,7 @@ http://mirror.kaolin.uk {
 https://mirror.kaolin.uk {
     @mygeofilter {
         maxmind_geolocation {
-        db_path "/usr/share/GeoIP/GeoLite2-Country.mmdb"
+        db_path "/caddydir/GeoLite2-Country.mmdb"
         deny_countries RU CN
         }
     }
@@ -32,7 +32,7 @@ https://mirror.kaolin.uk {
 http://mirror.jingk.ai {
     @mygeofilter {
         maxmind_geolocation {
-        db_path "/usr/share/GeoIP/GeoLite2-Country.mmdb"
+        db_path "/caddydir/GeoLite2-Country.mmdb"
         deny_countries RU CN
         }
     }
@@ -44,7 +44,7 @@ http://mirror.jingk.ai {
 https://mirror.jingk.ai {
     @mygeofilter {
         maxmind_geolocation {
-        db_path "/usr/share/GeoIP/GeoLite2-Country.mmdb"
+        db_path "/caddydir/GeoLite2-Country.mmdb"
         deny_countries RU CN
         }
     }
