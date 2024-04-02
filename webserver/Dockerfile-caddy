@@ -5,7 +5,8 @@ WORKDIR /caddy
 # Just leaving this here in case I ever decide to go back and not rely on raw R3 LE
 # Doesn't really matter because CF now issues R1 LE anyway
 RUN xcaddy build \
-    --with github.com/caddy-dns/cloudflare
+    --with github.com/caddy-dns/cloudflare \
+    --with github.com/porech/caddy-maxmind-geolocation
 
 FROM scratch
 
