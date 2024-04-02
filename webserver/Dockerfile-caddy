@@ -8,6 +8,9 @@ RUN xcaddy build \
     --with github.com/caddy-dns/cloudflare \
     --with github.com/porech/caddy-maxmind-geolocation
 
+RUN wget https://git.io/GeoLite2-ASN.mmdb
+RUN wget https://git.io/GeoLite2-Country.mmdb
+
 FROM scratch
 
 ENV HOME=/caddydir \
