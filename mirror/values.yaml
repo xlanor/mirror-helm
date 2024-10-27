@@ -98,7 +98,7 @@ jobs:
         - name: nas
           mountPath: /data
     - name: "archlinux"
-      schedule: "10 */1 * * *"
+      schedule: "10 */3 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://mirrors.ocf.berkeley.edu/archlinux"
