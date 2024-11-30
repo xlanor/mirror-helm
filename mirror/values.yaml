@@ -47,7 +47,7 @@ jobs:
           - key: name
             operator: In
             values:
-            - thunderbird
+            - mew
   jobSpecific:
     - name: "zorinsync"
       schedule: "30 13 * * *"
