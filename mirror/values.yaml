@@ -28,7 +28,6 @@ jobs:
       cpu: 250m
       memory: 1Gi
     requests:
-      cpu: 250m
       memory: 1Gi
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 3
@@ -47,7 +46,7 @@ jobs:
           - key: name
             operator: In
             values:
-            - mew
+            - mewtwo
   jobSpecific:
     - name: "zorinsync"
       schedule: "30 13 * * *"
