@@ -46,7 +46,7 @@ jobs:
           - key: name
             operator: In
             values:
-            - mewtwo
+            - mew
   jobSpecific:
     - name: "zorinsync"
       schedule: "30 13 * * *"
