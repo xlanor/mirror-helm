@@ -1,7 +1,3 @@
-# Default values for mirror.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
 global:
   namespace: "mirror"
   appName: "linuxmirror"
@@ -10,13 +6,13 @@ global:
     # Specifies whether a service account should be created
     create: true
     # Annotations to add to the service account
-    annotations: 
+    annotations:
       argocd.argoproj.io/hook: PreSync
       argocd.argoproj.io/sync-wave: "-1"
     # The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template
     name: "linuxmirror"
-  
+
 jobs:
   image:
     repository: ghcr.io/xlanor/sync-image
@@ -42,105 +38,137 @@ jobs:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
-        - matchExpressions:
-          - key: name
-            operator: In
-            values:
-            - mew
+          - matchExpressions:
+              - key: name
+                operator: In
+                values:
+                  - mew
+
   jobSpecific:
     - name: "zorinsync"
       schedule: "30 13 * * *"
       command: ["/var/run/sync.sh"]
-      args: 
+      args:
         - "rsync://mirror.zorinos.com/isos"
         - "/data"
       volumes:
         server: 10.20.0.10
         path: "/exports/zorin"
+        mountOptions:
+          - noac
+          - lookupcache=none
       mount:
         - name: nas
           mountPath: /data
+
     - name: "linuxmint"
       schedule: "33 */3 * * *"
       command: ["/var/run/sync.sh"]
-      args: 
+      args:
         - "rsync://rsync-packages.linuxmint.com/packages/"
         - "/data"
       volumes:
         server: 10.20.0.10
         path: "/exports/linuxmint"
+        mountOptions:
+          - noac
+          - lookupcache=none
       mount:
         - name: nas
           mountPath: /data
+
     - name: "linuxmintiso"
       schedule: "22 */3 * * *"
       command: ["/var/run/sync.sh"]
-      args: 
+      args:
         - "rsync://pub.linuxmint.com/pub/"
         - "/data"
       volumes:
         server: 10.20.0.10
         path: "/exports/linuxmint-iso"
+        mountOptions:
+          - noac
+          - lookupcache=none
       mount:
         - name: nas
           mountPath: /data
+
     - name: "mxlinux"
       schedule: "35 */4 * * *"
       command: ["/var/run/sync.sh"]
-      args: 
+      args:
         - "rsync://mirrors.rit.edu/mxlinux"
         - "/data"
       volumes:
         server: 10.20.0.10
         path: "/exports/mxlinux"
+        mountOptions:
+          - noac
+          - lookupcache=none
       mount:
         - name: nas
           mountPath: /data
+
     - name: "archlinux"
       schedule: "10 */3 * * *"
       command: ["/var/run/sync.sh"]
-      args: 
+      args:
         - "rsync://mirrors.ocf.berkeley.edu/archlinux"
         - "/data"
       volumes:
         server: 10.20.0.10
         path: "/exports/archlinux"
+        mountOptions:
+          - noac
+          - lookupcache=none
       mount:
         - name: nas
           mountPath: /data
+
     - name: "almalinux"
       schedule: "50 */3 * * *"
       command: ["/var/run/sync.sh"]
-      args: 
-        - "rsync://rsync.repo.almalinux.org/almalinux" 
+      args:
+        - "rsync://rsync.repo.almalinux.org/almalinux"
         - "/data"
       volumes:
         server: 10.20.0.10
         path: "/exports/almalinux"
+        mountOptions:
+          - noac
+          - lookupcache=none
       mount:
         - name: nas
           mountPath: /data
+
     - name: "endeavour"
       schedule: "20 */3 * * *"
       command: ["/var/run/sync.sh"]
-      args: 
+      args:
         - "rsync://mirror.alpix.eu/endeavouros"
         - "/data"
       volumes:
         server: 10.20.0.10
         path: "/exports/endeavouros"
+        mountOptions:
+          - noac
+          - lookupcache=none
       mount:
         - name: nas
           mountPath: /data
+
     - name: "alpine"
       schedule: "48 */5 * * *"
       command: ["/var/run/sync.sh"]
-      args: 
+      args:
         - "rsync://rsync.alpinelinux.org/alpine"
         - "/data"
       volumes:
         server: 10.20.0.10
         path: "/exports/alpine"
+        mountOptions:
+          - noac
+          - lookupcache=none
       mount:
         - name: nas
           mountPath: /data

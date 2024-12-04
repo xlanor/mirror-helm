@@ -1,7 +1,6 @@
 {{- $chart_name := .Chart.Name }}
 {{- $chart_version := .Chart.Version | replace "+" "_" }}
 {{- $release_name := .Release.Name }}
-
 {{- range $jobs := $.Values.jobs.jobSpecific }}
 ---
 apiVersion: batch/v1
@@ -14,10 +13,11 @@ metadata:
     app.kubernetes.io/name: {{ $jobs.name }}
     app.kubernetes.io/instance: {{ $.Release.Name }}
     app.kubernetes.io/managed-by: {{ $.Release.Service }}
-
 spec:
+  schedule: {{ $jobs.schedule | quote }}
   concurrencyPolicy: {{ $.Values.jobs.concurrencyPolicy }}
   failedJobsHistoryLimit: {{ $.Values.jobs.failedJobsHistoryLimit }}
+  successfulJobsHistoryLimit: {{ $.Values.jobs.successfulJobsHistoryLimit }}
   jobTemplate:
     spec:
       template:
@@ -28,17 +28,19 @@ spec:
           annotations:
             sidecar.istio.io/inject: "false"
         spec:
-        {{- if hasKey $.Values.global "serviceAccount" }}
-        {{- if hasKey $.Values.global.serviceAccount "name" }}
+          {{- if hasKey $.Values.global "serviceAccount" }}
+          {{- if hasKey $.Values.global.serviceAccount "name" }}
           serviceAccountName: {{ $.Values.global.serviceAccount.name }}
-        {{- else }}
+          {{- else }}
           serviceAccountName: {{ $jobs.name }}
-        {{- end }}
-        {{- end }}
-        {{- if hasKey $.Values.jobs "securityContext" }}
-          {{- if $.Values.jobs.securityContext.runAsUser }}
+          {{- end }}
+          {{- end }}
+          {{- if hasKey $.Values.jobs "securityContext" }}
+          {{- if $.Values.jobs.securityContext.enabled }}
           securityContext:
+            {{- if $.Values.jobs.securityContext.runAsUser }}
             runAsUser: {{ $.Values.jobs.securityContext.runAsUser }}
+            {{- end }}
             {{- if $.Values.jobs.securityContext.runAsGroup }}
             runAsGroup: {{ $.Values.jobs.securityContext.runAsGroup }}
             {{- end }}
@@ -46,53 +48,59 @@ spec:
             fsGroup: {{ $.Values.jobs.securityContext.fsGroup }}
             {{- end }}
           {{- end }}
-        {{- end }}
-          containers:
-          - image: "{{ $.Values.jobs.image.repository }}:{{ $.Values.jobs.image.tag }}"
-            imagePullPolicy: {{ $.Values.jobs.image.imagePullPolicy }}
-            name: {{ $.Values.jobs.name }}
-            {{- with $.Values.jobs.env }}
-            env: 
-{{ toYaml . | indent 12 }}
-            {{- end }}
-            {{- with $.Values.jobs.envFrom }}
-            envFrom:
-{{ toYaml . | indent 12 }}
-            {{- end }}
-            {{- if $jobs.command }}
-            command: {{ $jobs.command }}
-            {{- end }}
-            {{- with $jobs.args }}
-            args:
-{{ toYaml . | indent 12 }}
-              {{- end }}
-            {{- with $.Values.jobs.resources }}
-            resources:
-{{ toYaml . | indent 14 }}
-            {{- end }}
-            {{- with $jobs.mount }}
-            volumeMounts:
-{{ toYaml . | indent 14 }}
-            {{- end }}
-          {{- with $.Values.jobs.nodeSelector }}
-          nodeSelector:
-{{ toYaml . | indent 12 }}
           {{- end }}
+          containers:
+            - name: {{ $.Values.jobs.name }}
+              image: "{{ $.Values.jobs.image.repository }}:{{ $.Values.jobs.image.tag }}"
+              imagePullPolicy: {{ $.Values.jobs.image.pullPolicy }}
+              {{- with $.Values.jobs.env }}
+              env:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with $.Values.jobs.envFrom }}
+              envFrom:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- if $jobs.command }}
+              command:
+                {{- toYaml $jobs.command | nindent 16 }}
+              {{- end }}
+              {{- with $jobs.args }}
+              args:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with $.Values.jobs.resources }}
+              resources:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with $jobs.mount }}
+              volumeMounts:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
           {{- with $.Values.jobs.affinity }}
           affinity:
-{{ toYaml . | indent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $.Values.jobs.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with $.Values.jobs.tolerations }}
           tolerations:
-{{ toYaml . | indent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           restartPolicy: {{ $.Values.jobs.restartPolicy }}
           {{- with $jobs.volumes }}
           volumes:
-          - name: nas
-            nfs:
-{{ toYaml . | indent 14 }}
+            - name: nas
+              nfs:
+                server: {{ .server }}
+                path: {{ .path }}
+                {{- if .mountOptions }}
+                mountOptions:
+                  {{- range .mountOptions }}
+                  - {{ . }}
+                  {{- end }}
+                {{- end }}
           {{- end }}
-  schedule: {{ $jobs.schedule | quote }}
-  successfulJobsHistoryLimit: {{ $.Values.jobs.successfulJobsHistoryLimit }}
 {{- end }}
