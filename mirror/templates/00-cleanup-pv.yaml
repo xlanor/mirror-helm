@@ -23,8 +23,7 @@ spec:
           for pv in {{ range .Values.jobs.jobSpecific }}{{ .name }}-pv {{ end }}; do
             kubectl patch pv $pv -p '{"spec":{"claimRef": null}}' 2>/dev/null || echo "Skipping $pv"
           done
-          echo "Done with PV cleanup - exiting in 5 seconds..."
-          sleep 5
-          echo "Goodbye!"
-          exit 0
+          echo "Done with PV cleanup - forcing exit now!"
+          pkill -9 kubectl
+          kill -9 1
       restartPolicy: Never
