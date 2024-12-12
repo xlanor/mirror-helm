@@ -16,14 +16,24 @@ spec:
       containers:
       - name: kubectl
         image: bitnami/kubectl:latest
-        command: 
-        - /bin/sh
-        - -c
-        - |
-          for pv in {{ range .Values.jobs.jobSpecific }}{{ .name }}-pv {{ end }}; do
-            kubectl patch pv $pv -p '{"spec":{"claimRef": null}}' 2>/dev/null || echo "Skipping $pv"
-          done
-          echo "Done with PV cleanup - forcing exit now!"
-          pkill -9 kubectl
-          kill -9 1
+        command: ["/opt/bitnami/kubectl/bin/kubectl"]
+        args:
+        - get
+        - pv
+        - {{ range .Values.jobs.jobSpecific }}{{ .name }}-pv{{ end }}
+        - -o
+        - "json"
+        - "--ignore-not-found=true"
+        - "|"
+        - jq
+        - '.metadata.name'
+        - "&&"
+        - "kubectl"
+        - patch
+        - pv
+        - {{ range .Values.jobs.jobSpecific }}{{ .name }}-pv{{ end }}
+        - -p
+        - '{"spec":{"claimRef": null}}'
+        - "||"
+        - "true"
       restartPolicy: Never
