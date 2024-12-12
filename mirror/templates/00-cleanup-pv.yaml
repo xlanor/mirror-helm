@@ -15,13 +15,14 @@ spec:
       serviceAccountName: {{ .Values.global.serviceAccount.name }}
       containers:
       - name: kubectl
-        image: busybox
+        image: curlimages/curl:latest
         command: ["/bin/sh"]
         args:
         - -c
         - |
-          wget -O /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(wget -q -O - https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && \
-          chmod +x /usr/local/bin/kubectl && \
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
+          chmod +x kubectl && \
+          mv kubectl /usr/local/bin/kubectl && \
           kubectl get pv {{ range .Values.jobs.jobSpecific }}{{ .name }}-pv{{ end }} --ignore-not-found=true && \
           kubectl patch pv {{ range .Values.jobs.jobSpecific }}{{ .name }}-pv{{ end }} -p '{"spec":{"claimRef": null}}' || \
           true
