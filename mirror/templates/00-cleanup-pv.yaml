@@ -20,10 +20,11 @@ spec:
         - /bin/sh
         - -c
         - |
-          (
-            for pv in {{ range .Values.jobs.jobSpecific }}{{ .name }}-pv {{ end }}; do
-              kubectl patch pv $pv -p '{"spec":{"claimRef": null}}' 2>/dev/null || echo "Skipping $pv"
-            done
-          ) 2>&1 | tee /proc/1/fd/1 &
-          sleep 60 && exit 0
+          for pv in {{ range .Values.jobs.jobSpecific }}{{ .name }}-pv {{ end }}; do
+            kubectl patch pv $pv -p '{"spec":{"claimRef": null}}' 2>/dev/null || echo "Skipping $pv"
+          done
+          echo "Done with PV cleanup - exiting in 5 seconds..."
+          sleep 5
+          echo "Goodbye!"
+          exit 0
       restartPolicy: Never
