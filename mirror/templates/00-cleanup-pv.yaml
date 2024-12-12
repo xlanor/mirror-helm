@@ -15,25 +15,14 @@ spec:
       serviceAccountName: {{ .Values.global.serviceAccount.name }}
       containers:
       - name: kubectl
-        image: bitnami/kubectl:latest
-        command: ["/opt/bitnami/kubectl/bin/kubectl"]
+        image: busybox
+        command: ["/bin/sh"]
         args:
-        - get
-        - pv
-        - {{ range .Values.jobs.jobSpecific }}{{ .name }}-pv{{ end }}
-        - -o
-        - "json"
-        - "--ignore-not-found=true"
-        - "|"
-        - jq
-        - '.metadata.name'
-        - "&&"
-        - "kubectl"
-        - patch
-        - pv
-        - {{ range .Values.jobs.jobSpecific }}{{ .name }}-pv{{ end }}
-        - -p
-        - '{"spec":{"claimRef": null}}'
-        - "||"
-        - "true"
+        - -c
+        - |
+          wget -O /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(wget -q -O - https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && \
+          chmod +x /usr/local/bin/kubectl && \
+          kubectl get pv {{ range .Values.jobs.jobSpecific }}{{ .name }}-pv{{ end }} --ignore-not-found=true && \
+          kubectl patch pv {{ range .Values.jobs.jobSpecific }}{{ .name }}-pv{{ end }} -p '{"spec":{"claimRef": null}}' || \
+          true
       restartPolicy: Never
