@@ -16,6 +16,11 @@ spec:
       containers:
       - name: kubectl
         image: xlanor/kubectl:1.31.3
+        env:
+        - name: KUBERNETES_SERVICE_HOST
+          value: "kubernetes.default.svc"
+        - name: KUBERNETES_SERVICE_PORT
+          value: "443"
         args:
         - -c
         - |
