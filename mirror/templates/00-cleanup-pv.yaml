@@ -8,6 +8,7 @@ metadata:
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
     argocd.argoproj.io/sync-wave: "-1"
 spec:
+  backoffLimit: 0
   ttlSecondsAfterFinished: 100
   template:
     spec:
@@ -19,15 +20,7 @@ spec:
         - /bin/sh
         - -c
         - |
-          set -e
-          {{- range .Values.jobs.jobSpecific }}
-          if kubectl get pv {{ .name }}-pv 2>/dev/null; then
-            kubectl patch pv {{ .name }}-pv -p '{"spec":{"claimRef": null}}' 2>/dev/null || true
-            echo "Cleaned up {{ .name }}-pv"
-          else
-            echo "PV {{ .name }}-pv does not exist, skipping"
-          fi
-          {{- end }}
-          # Always exit successfully
-          exit 0
+          for pv in {{ range .Values.jobs.jobSpecific }}{{ .name }}-pv {{ end }}; do
+            kubectl patch pv $pv -p '{"spec":{"claimRef": null}}' 2>/dev/null || echo "Skipping $pv"
+          done
       restartPolicy: Never
