@@ -19,12 +19,15 @@ spec:
         - /bin/sh
         - -c
         - |
+          set -e
           {{- range .Values.jobs.jobSpecific }}
           if kubectl get pv {{ .name }}-pv 2>/dev/null; then
-            kubectl patch pv {{ .name }}-pv -p '{"spec":{"claimRef": null}}' 2>/dev/null || echo "Could not patch {{ .name }}-pv"
+            kubectl patch pv {{ .name }}-pv -p '{"spec":{"claimRef": null}}' 2>/dev/null || true
             echo "Cleaned up {{ .name }}-pv"
           else
             echo "PV {{ .name }}-pv does not exist, skipping"
           fi
           {{- end }}
-      restartPolicy: OnFailure
+          # Always exit successfully
+          exit 0
+      restartPolicy: Never
