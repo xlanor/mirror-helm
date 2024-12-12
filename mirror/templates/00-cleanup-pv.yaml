@@ -17,15 +17,12 @@ spec:
       - name: kubectl
         image: bitnami/kubectl:latest
         command: 
-        - /bin/sh
+        - sh
+        args:
         - -c
         - |
-          set -e
-          SUCCESS=true
           for pv in {{ range .Values.jobs.jobSpecific }}{{ .name }}-pv {{ end }}; do
-            if ! kubectl patch pv $pv -p '{"spec":{"claimRef": null}}' 2>/dev/null; then
-              echo "Skipping $pv"
-            fi
+            kubectl patch pv $pv -p '{"spec":{"claimRef": null}}' 2>/dev/null || echo "Skipping $pv"
           done
-          exit 0
+          exit
       restartPolicy: Never
