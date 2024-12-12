@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mirror-pv-cleanup
+  namespace: {{ .Values.global.namespace }}
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      serviceAccountName: {{ .Values.global.serviceAccount.name }}
+      containers:
+      - name: kubectl
+        image: bitnami/kubectl:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          # Create array of PV names from jobSpecific configs
+          pvs=( {{- range .Values.jobs.jobSpecific }} "{{ .name }}-pv" {{- end }} )
+          for pv in "${pvs[@]}"; do
+            if kubectl get pv $pv &>/dev/null; then
+              kubectl patch pv $pv -p '{"spec":{"claimRef": null}}'
+            else
+              echo "PV $pv not found, skipping"
+            fi
+          done
+      restartPolicy: OnFailure

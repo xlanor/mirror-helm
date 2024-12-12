@@ -54,93 +54,77 @@ jobs:
       args: 
         - "rsync://mirror.zorinos.com/isos"
         - "/data"
-      volumes:
+      storage:
         server: 10.20.0.10
         path: "/exports/zorin"
-      mount:
-        - name: nas
-          mountPath: /data
+        size: "10Gi"
     - name: "linuxmint"
       schedule: "33 */3 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://rsync-packages.linuxmint.com/packages/"
         - "/data"
-      volumes:
+      storage:
         server: 10.20.0.10
         path: "/exports/linuxmint"
-      mount:
-        - name: nas
-          mountPath: /data
+        size: "10Gi"
     - name: "linuxmintiso"
       schedule: "22 */3 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://pub.linuxmint.com/pub/"
         - "/data"
-      volumes:
+      storage:
         server: 10.20.0.10
         path: "/exports/linuxmint-iso"
-      mount:
-        - name: nas
-          mountPath: /data
+        size: "10Gi"
     - name: "mxlinux"
       schedule: "35 */4 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://mirrors.rit.edu/mxlinux"
         - "/data"
-      volumes:
+      storage:
         server: 10.20.0.10
         path: "/exports/mxlinux"
-      mount:
-        - name: nas
-          mountPath: /data
+        size: "10Gi"
     - name: "archlinux"
       schedule: "10 */3 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://mirrors.ocf.berkeley.edu/archlinux"
         - "/data"
-      volumes:
+      storage:
         server: 10.20.0.10
         path: "/exports/archlinux"
-      mount:
-        - name: nas
-          mountPath: /data
+        size: "10Gi"
     - name: "almalinux"
       schedule: "50 */3 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://rsync.repo.almalinux.org/almalinux" 
         - "/data"
-      volumes:
+      storage:
         server: 10.20.0.10
         path: "/exports/almalinux"
-      mount:
-        - name: nas
-          mountPath: /data
+        size: "10Gi"
     - name: "endeavour"
       schedule: "20 */3 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://mirror.alpix.eu/endeavouros"
         - "/data"
-      volumes:
+      storage:
         server: 10.20.0.10
         path: "/exports/endeavouros"
-      mount:
-        - name: nas
-          mountPath: /data
+        size: "10Gi"
     - name: "alpine"
       schedule: "48 */5 * * *"
       command: ["/var/run/sync.sh"]
       args: 
         - "rsync://rsync.alpinelinux.org/alpine"
         - "/data"
-      volumes:
+      storage:
         server: 10.20.0.10
         path: "/exports/alpine"
-      mount:
-        - name: nas
-          mountPath: /data
+        size: "10Gi"

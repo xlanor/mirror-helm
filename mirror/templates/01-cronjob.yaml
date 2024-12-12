@@ -65,15 +65,14 @@ spec:
             {{- with $jobs.args }}
             args:
 {{ toYaml . | indent 12 }}
-              {{- end }}
+            {{- end }}
             {{- with $.Values.jobs.resources }}
             resources:
 {{ toYaml . | indent 14 }}
             {{- end }}
-            {{- with $jobs.mount }}
             volumeMounts:
-{{ toYaml . | indent 14 }}
-            {{- end }}
+            - name: data-volume
+              mountPath: /data
           {{- with $.Values.jobs.nodeSelector }}
           nodeSelector:
 {{ toYaml . | indent 12 }}
@@ -87,12 +86,10 @@ spec:
 {{ toYaml . | indent 12 }}
           {{- end }}
           restartPolicy: {{ $.Values.jobs.restartPolicy }}
-          {{- with $jobs.volumes }}
           volumes:
-          - name: nas
-            nfs:
-{{ toYaml . | indent 14 }}
-          {{- end }}
+          - name: data-volume
+            persistentVolumeClaim:
+              claimName: {{ $jobs.name }}-pvc
   schedule: {{ $jobs.schedule | quote }}
   successfulJobsHistoryLimit: {{ $.Values.jobs.successfulJobsHistoryLimit }}
 {{- end }}

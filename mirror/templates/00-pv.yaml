@@ -1,0 +1,33 @@
+{{- range .Values.jobs.jobSpecific }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .name }}-pv
+  labels:
+    type: nfs
+    app: {{ $.Values.global.appName }}
+spec:
+  capacity:
+    storage: {{ .storage.size | default "10Gi" }}
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: {{ .storage.server }}
+    path: {{ .storage.path }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .name }}-pvc
+  namespace: {{ $.Values.global.namespace }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .storage.size | default "10Gi" }}
+  volumeName: {{ .name }}-pv
+  storageClassName: ""
+{{- end }}
