@@ -19,13 +19,11 @@ spec:
         - /bin/sh
         - -c
         - |
-          # Create array of PV names from jobSpecific configs
-          pvs=( {{- range .Values.jobs.jobSpecific }} "{{ .name }}-pv" {{- end }} )
-          for pv in "${pvs[@]}"; do
-            if kubectl get pv $pv &>/dev/null; then
-              kubectl patch pv $pv -p '{"spec":{"claimRef": null}}'
-            else
-              echo "PV $pv not found, skipping"
-            fi
-          done
+          {{- range .Values.jobs.jobSpecific }}
+          if kubectl get pv {{ .name }}-pv &>/dev/null; then
+            kubectl patch pv {{ .name }}-pv -p '{"spec":{"claimRef": null}}'
+          else
+            echo "PV {{ .name }}-pv not found, skipping"
+          fi
+          {{- end }}
       restartPolicy: OnFailure
