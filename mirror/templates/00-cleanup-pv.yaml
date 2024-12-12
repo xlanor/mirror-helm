@@ -20,10 +20,11 @@ spec:
         - -c
         - |
           {{- range .Values.jobs.jobSpecific }}
-          if kubectl get pv {{ .name }}-pv &>/dev/null; then
-            kubectl patch pv {{ .name }}-pv -p '{"spec":{"claimRef": null}}'
+          if kubectl get pv {{ .name }}-pv 2>/dev/null; then
+            kubectl patch pv {{ .name }}-pv -p '{"spec":{"claimRef": null}}' 2>/dev/null || echo "Could not patch {{ .name }}-pv"
+            echo "Cleaned up {{ .name }}-pv"
           else
-            echo "PV {{ .name }}-pv not found, skipping"
+            echo "PV {{ .name }}-pv does not exist, skipping"
           fi
           {{- end }}
       restartPolicy: OnFailure
