@@ -10,6 +10,7 @@ metadata:
 spec:
   backoffLimit: 0
   ttlSecondsAfterFinished: 100
+  activeDeadlineSeconds: 60  # Job will be marked as failed after 1 minute
   template:
     spec:
       serviceAccountName: {{ .Values.global.serviceAccount.name }}
@@ -17,12 +18,10 @@ spec:
       - name: kubectl
         image: bitnami/kubectl:latest
         command: 
-        - sh
-        args:
+        - /bin/sh
         - -c
         - |
           for pv in {{ range .Values.jobs.jobSpecific }}{{ .name }}-pv {{ end }}; do
             kubectl patch pv $pv -p '{"spec":{"claimRef": null}}' 2>/dev/null || echo "Skipping $pv"
           done
-          exit
       restartPolicy: Never
