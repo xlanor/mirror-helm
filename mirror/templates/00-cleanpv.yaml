@@ -21,6 +21,11 @@ spec:
       containers:
       - name: kubectl
         image: bitnami/kubectl:1.32
+        env:
+        - name: KUBERNETES_SERVICE_HOST
+          value: "kubernetes.default.svc"
+        - name: KUBERNETES_SERVICE_PORT
+          value: "443"
         command:
         - /bin/sh
         args:
@@ -31,4 +36,6 @@ spec:
           else
             echo "PV not found, skipping patch"
           fi
+        livenessProbe: null
+        readinessProbe: null
       restartPolicy: Never
