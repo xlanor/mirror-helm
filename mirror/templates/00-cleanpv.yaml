@@ -18,14 +18,10 @@ spec:
       tolerations:
       - key: node-role.kubernetes.io/master
         effect: NoSchedule
+      hostNetwork: true  # Add this line
       containers:
       - name: kubectl
         image: bitnami/kubectl:1.32
-        env:
-        - name: KUBERNETES_SERVICE_HOST
-          value: "kubernetes.default.svc"
-        - name: KUBERNETES_SERVICE_PORT
-          value: "443"
         command:
         - /bin/sh
         args:
