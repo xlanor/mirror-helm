@@ -8,8 +8,8 @@ metadata:
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
     argocd.argoproj.io/sync-wave: "-1"
 spec:
-  backoffLimit: 0
-  ttlSecondsAfterFinished: 100
+  backoffLimit: 2  # Allow some retries
+  ttlSecondsAfterFinished: 300  # Keep logs around longer
   template:
     spec:
       serviceAccountName: {{ .Values.global.serviceAccount.name }}
@@ -18,7 +18,7 @@ spec:
       tolerations:
       - key: node-role.kubernetes.io/master
         effect: NoSchedule
-      hostNetwork: true  # Add this line
+      hostNetwork: true
       containers:
       - name: kubectl
         image: bitnami/kubectl:1.32
@@ -27,11 +27,26 @@ spec:
         args:
         - -c
         - |
-          if kubectl get pv {{ range .Values.jobs.jobSpecific }}{{ .name }}-pv{{ end }} --ignore-not-found=true | grep -q "{{ range .Values.jobs.jobSpecific }}{{ .name }}-pv{{ end }}"; then
-            kubectl patch pv {{ range .Values.jobs.jobSpecific }}{{ .name }}-pv{{ end }} -p '{"spec":{"claimRef": null}}'
+          set -x  # Enable command printing
+          echo "Starting PV cleanup job..."
+          
+          {{- range .Values.jobs.jobSpecific }}
+          PV_NAME="{{ .name }}-pv"
+          echo "Checking PV: $PV_NAME"
+          
+          if kubectl get pv $PV_NAME --ignore-not-found=true | grep -q "$PV_NAME"; then
+            echo "Found PV $PV_NAME, removing claimRef..."
+            kubectl patch pv $PV_NAME -p '{"spec":{"claimRef": null}}' || {
+              echo "Failed to patch PV $PV_NAME"
+              exit 1
+            }
+            echo "Successfully patched PV $PV_NAME"
           else
-            echo "PV not found, skipping patch"
+            echo "PV $PV_NAME not found, skipping"
           fi
+          {{- end }}
+          
+          echo "PV cleanup job completed"
         livenessProbe: null
         readinessProbe: null
       restartPolicy: Never
