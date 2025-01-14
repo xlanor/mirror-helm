@@ -2,7 +2,7 @@
 FROM ubuntu:jammy AS rsync
 
 # Set to targeted rsync version
-ENV RSYNC=rsync-3.2.7
+ENV RSYNC=rsync-3.4.0
 
 ADD config /config
 
